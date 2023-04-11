@@ -152,6 +152,8 @@ function(_corrosion_determine_libs_new target_triple out_libs)
                 list(APPEND stripped_lib_list "${stripped_lib}")
             endforeach()
             set(libs_list "${stripped_lib_list}")
+            # Special case `msvcrt` to link with the debug version in Debug mode.
+            list(TRANSFORM libs_list REPLACE "^msvcrt$" "\$<\$<CONFIG:Debug>:msvcrtd>")
             message(STATUS "Required static libs for target ${target_triple}: ${libs_list}" )
         else()
             message(FATAL_ERROR "Regex did not match on:\n${cargo_build_error_message}")
